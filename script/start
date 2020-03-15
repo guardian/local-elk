@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+docker-compose up -d
+
+echo "local-elk started. It may take a little while to initialise..."

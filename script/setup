@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+dev-nginx setup-app dev-nginx.yml

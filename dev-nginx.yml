@@ -1,0 +1,4 @@
+name: local-elk
+mappings:
+  - prefix: logs
+    port: 5601
