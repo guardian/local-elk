@@ -2,6 +2,35 @@
 
 set -e
 
+setupLocalKinesis() {
+  LOCALSTACK_ENDPOINT=http://localhost:5001
+
+  # provide dummy credentials for the aws cli, they're not used in localstack
+  export AWS_ACCESS_KEY_ID=not-needed
+  export AWS_SECRET_ACCESS_KEY=not-needed
+  export AWS_DEFAULT_REGION=eu-west-1
+  export AWS_PAGER=""
+
+  echo "Waiting for localstack $LOCALSTACK_ENDPOINT..."
+  while ! curl -s $LOCALSTACK_ENDPOINT >/dev/null; do
+    sleep 1 # wait for 1 second before check again
+  done
+  echo "localstack launched"
+
+  stream_name='local-elk-logging-kinesis-stream'
+
+  stream_count=$(aws --endpoint-url=$LOCALSTACK_ENDPOINT kinesis list-streams | jq -r '.StreamNames[]' | grep -c "${stream_name}" || true)
+  if [ "$stream_count" -eq 0 ]; then
+    echo "creating local kinesis stream ${stream_name}"
+    aws --endpoint-url=$LOCALSTACK_ENDPOINT kinesis create-stream --shard-count 1 --stream-name "${stream_name}"
+    echo "created local kinesis stream ${stream_name}"
+  else
+    echo "stream $stream_name exists"
+  fi
+}
+
 docker-compose up -d
+setupLocalKinesis
 
 echo "local-elk started. It may take a little while to initialise..."
+echo "local-elk will be available on https://logs.local.dev-gutools.co.uk"

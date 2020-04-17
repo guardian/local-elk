@@ -13,8 +13,6 @@ services:
       - 9200
     environment:
       ES_JAVA_OPTS: "-Xms256m -Xmx256m"
-    networks:
-      - elk
 
   logstash:
     build:
@@ -28,8 +26,10 @@ services:
       - "5000:5000/tcp"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-      - elk
+      AWS_CBOR_DISABLE: "true"
+      AWS_ACCESS_KEY_ID: "not-needed"
+      AWS_SECRET_ACCESS_KEY: "not-needed"
+      AWS_DEFAULT_REGION: "eu-west-1"
     depends_on:
       - elasticsearch
 
@@ -42,14 +42,20 @@ services:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - "5601:5601"
-    networks:
-      - elk
     depends_on:
       - elasticsearch
 
-networks:
-  elk:
-    driver: bridge
+  localstack:
+    image: localstack/localstack:0.11.0
+    ports:
+      - "5001:4566" # localstack's service proxy endpoint
+    expose:
+      - 4566
+    environment:
+      SERVICES: kinesis,dynamodb
+      DEFAULT_REGION: eu-west-1
+      KINESIS_ERROR_PROBABILITY: 0.0
+
 
 volumes:
   elasticsearch:
