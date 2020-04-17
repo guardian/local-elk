@@ -11,6 +11,15 @@ export AWS_SECRET_ACCESS_KEY=not-needed
 export AWS_DEFAULT_REGION=eu-west-1
 export AWS_PAGER=""
 
+startLocalStack() {
+  docker-compose up -d localstack
+  echo "waiting for localstack to launch on $LOCALSTACK_ENDPOINT"
+  while ! curl -s $LOCALSTACK_ENDPOINT >/dev/null; do
+    sleep 1 # wait for 1 second before check again
+  done
+  echo " localstack launched"
+}
+
 setupLocalKinesis() {
   echo "creating kinesis stream $STREAM_NAME"
   currentStreams=$(aws kinesis list-streams --endpoint-url $LOCALSTACK_ENDPOINT)
@@ -24,18 +33,13 @@ setupLocalKinesis() {
   fi
 }
 
-startDocker() {
-  docker-compose up -d
-
-  echo "waiting for localstack to launch on $LOCALSTACK_ENDPOINT"
-  while ! curl -s $LOCALSTACK_ENDPOINT >/dev/null; do
-    sleep 1 # wait for 1 second before check again
-  done
-  echo "  localstack launched"
+startLocalELK() {
+  docker-compose up -d elasticsearch logstash kibana
 }
 
-startDocker
+startLocalStack
 setupLocalKinesis
+startLocalELK
 
 echo "local-elk started. It may take a little while to initialise..."
 echo "  local-elk will be available on https://logs.local.dev-gutools.co.uk"
