@@ -24,6 +24,11 @@ For example, in a REST API, if we log the `method` as a marker we can easily sea
 - Ship logs from your application 
 
 ## Shipping logs from your application
+local-elk provides two ways to ingest logs:
+- on TCP port 5000
+- on a kinesis stream (running in [localstack](https://github.com/localstack/localstack)) called `local-elk-logging-kinesis-stream`
+
+### TCP
 local-elk accepts tcp input on port 5000 in the JSON codec format. 
 We can use the `LogstashTcpSocketAppender` to ship logs to it from our application.
 
@@ -31,7 +36,8 @@ TIP: You'll likely want to have a guard to only use the `LogstashTcpSocketAppend
 
 Examples assume you are using the [Play!](https://www.playframework.com/) framework in Scala.
 
-### Via logback.xml
+
+#### Via logback.xml
 Add an appender to your logback configuration file:
 
 ```xml
@@ -50,7 +56,7 @@ Add an appender to your logback configuration file:
 
 More information [here](https://github.com/logstash/logstash-logback-encoder#tcp-appenders).
 
-### Via application code
+#### Via application code
 While shipping logs via the logback configuration is fine, we may want to augment logs with more information prior to writing them. 
 For example, in PROD we'd add the `Stage`, `Stack` and `App` tags.
 
@@ -122,7 +128,15 @@ object LogConfig {
 }
 ```
 
-### Alternatives
+### Kinesis
+You can configure your application to write to the kinesis stream `local-elk-logging-kinesis-stream`. As this is running in localstack, you'll also need to set a custom endpoint to `http://localhost:4566`.
+
+```scala
+val endpoint = new EndpointConfiguration("http://localhost:4566", "eu-west-1")
+val client = AmazonKinesisClientBuilder.standard().withEndpointConfiguration(endpoint).build()
+```
+
+## Alternatives
 We could use the [File input plugin](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-file.html) to ship logs from disk.
 
 However, this has a couple of problems:
