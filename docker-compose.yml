@@ -52,7 +52,7 @@ services:
     expose:
       - 4566
     environment:
-      SERVICES: kinesis,dynamodb
+      SERVICES: cloudformation,kinesis,dynamodb
       DEFAULT_REGION: eu-west-1
       KINESIS_ERROR_PROBABILITY: 0.0
       # This is because https://github.com/awslabs/amazon-kinesis-producer

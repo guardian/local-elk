@@ -2,8 +2,13 @@
 
 set -e
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT_DIR=${DIR}/..
+
 LOCALSTACK_ENDPOINT=http://localhost:5001
-STREAM_NAME=local-elk-logging-kinesis-stream
+STACK_FILE="$ROOT_DIR/local-elk-stack.yml"
+STACK_FILENAME=$(basename "$STACK_FILE")
+STACK_NAME=local-elk
 
 # provide dummy credentials for the aws cli, they're not used in localstack
 export AWS_ACCESS_KEY_ID=not-needed
@@ -21,16 +26,13 @@ startLocalStack() {
 }
 
 setupLocalKinesis() {
-  echo "creating kinesis stream $STREAM_NAME"
-  currentStreams=$(aws kinesis list-streams --endpoint-url $LOCALSTACK_ENDPOINT)
-  exists=$(echo "$currentStreams" | jq -r ".StreamNames[] | select(. == \"$STREAM_NAME\")")
+  echo "creating localstack resources"
 
-  if [[ -z $exists ]]; then
-    aws --endpoint-url=$LOCALSTACK_ENDPOINT kinesis create-stream --shard-count 1 --stream-name "$STREAM_NAME"
-    echo "  created local kinesis stream $STREAM_NAME"
-  else
-    echo "  skipping as stream $STREAM_NAME exists"
-  fi
+  aws cloudformation create-stack \
+    --stack-name "$STACK_NAME" \
+    --template-body "file://$STACK_FILE" \
+    --endpoint-url $LOCALSTACK_ENDPOINT > /dev/null
+  echo "  created stack $STACK_NAME using $STACK_FILENAME"
 }
 
 startLocalELK() {
