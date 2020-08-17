@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: FOR DEV ONLY. Resources for local-elk, runs through localstack.
+Resources:
+  LogsStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: local-elk-logging-kinesis-stream
+      ShardCount: 1
+      RetentionPeriodHours: 168
+  MetricsStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: local-elk-metric-kinesis-stream
+      ShardCount: 1
+      RetentionPeriodHours: 168
