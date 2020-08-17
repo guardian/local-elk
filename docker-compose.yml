@@ -21,6 +21,7 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/config/metricbeat.template.json:/usr/share/logstash/config/metricbeat.template.json
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000/tcp"
