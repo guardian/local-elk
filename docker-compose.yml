@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   elasticsearch:
@@ -28,8 +28,8 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
       AWS_CBOR_DISABLE: "true"
-      AWS_ACCESS_KEY_ID: "not-needed"
-      AWS_SECRET_ACCESS_KEY: "not-needed"
+      AWS_ACCESS_KEY_ID: ""
+      AWS_SECRET_ACCESS_KEY: ""
       AWS_DEFAULT_REGION: "eu-west-1"
     depends_on:
       - elasticsearch
@@ -46,21 +46,21 @@ services:
     depends_on:
       - elasticsearch
 
-  localstack:
-    image: localstack/localstack:0.11.0
-    ports:
-      - "5001:4566" # localstack's service proxy endpoint
-    expose:
-      - 4566
-    environment:
-      SERVICES: cloudformation,kinesis,dynamodb
-      DEFAULT_REGION: eu-west-1
-      KINESIS_ERROR_PROBABILITY: 0.0
-      # This is because https://github.com/awslabs/amazon-kinesis-producer
-      # (used by logstash kinesis output plugin) only supports connection via HTTPS.
-      # It's possible this might need to be configurable in the future,
-      # if logs are sent to Kinesis locally using other methods.
-      USE_SSL: "true"
+  # localstack:
+  #   image: localstack/localstack:0.11.0
+  #   ports:
+  #     - "5001:4566" # localstack's service proxy endpoint
+  #   expose:
+  #     - 4566
+  #   environment:
+  #     SERVICES: cloudformation,kinesis,dynamodb
+  #     DEFAULT_REGION: eu-west-1
+  #     KINESIS_ERROR_PROBABILITY: 0.0
+  #     # This is because https://github.com/awslabs/amazon-kinesis-producer
+  #     # (used by logstash kinesis output plugin) only supports connection via HTTPS.
+  #     # It's possible this might need to be configurable in the future,
+  #     # if logs are sent to Kinesis locally using other methods.
+  #     USE_SSL: "true"
 
 volumes:
   elasticsearch:

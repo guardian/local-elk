@@ -16,31 +16,31 @@ export AWS_SECRET_ACCESS_KEY=not-needed
 export AWS_DEFAULT_REGION=eu-west-1
 export AWS_PAGER=""
 
-startLocalStack() {
-  docker-compose up -d localstack
-  echo "waiting for localstack to launch on $LOCALSTACK_ENDPOINT"
-  while ! curl -s $LOCALSTACK_ENDPOINT >/dev/null; do
-    sleep 1 # wait for 1 second before check again
-  done
-  echo " localstack launched"
-}
+# startLocalStack() {
+#   docker-compose up -d localstack
+#   echo "waiting for localstack to launch on $LOCALSTACK_ENDPOINT"
+#   while ! curl -s $LOCALSTACK_ENDPOINT >/dev/null; do
+#     sleep 1 # wait for 1 second before check again
+#   done
+#   echo " localstack launched"
+# }
 
-setupLocalKinesis() {
-  echo "creating localstack resources"
+# setupLocalKinesis() {
+#   echo "creating localstack resources"
 
-  aws cloudformation create-stack \
-    --stack-name "$STACK_NAME" \
-    --template-body "file://$STACK_FILE" \
-    --endpoint-url $LOCALSTACK_ENDPOINT > /dev/null
-  echo "  created stack $STACK_NAME using $STACK_FILENAME"
-}
+#   aws cloudformation create-stack \
+#     --stack-name "$STACK_NAME" \
+#     --template-body "file://$STACK_FILE" \
+#     --endpoint-url $LOCALSTACK_ENDPOINT > /dev/null
+#   echo "  created stack $STACK_NAME using $STACK_FILENAME"
+# }
 
 startLocalELK() {
   docker-compose up -d elasticsearch logstash kibana
 }
 
-startLocalStack
-setupLocalKinesis
+# startLocalStack
+# setupLocalKinesis
 startLocalELK
 
 echo "local-elk started. It may take a little while to initialise..."
