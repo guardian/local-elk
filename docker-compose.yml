@@ -9,6 +9,7 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - elasticsearch:/usr/share/elasticsearch/data
+      - ./certificates:/tmp/certificates
     expose:
       - 9200
     environment:
@@ -40,6 +41,9 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./certificates/elastic-certificates.p12:/tmp/certificates/elastic-certificates.p12
+      - ./certificates/elastic-stack-ca.p12:/tmp/certificates/elastic-stack-ca.p12
+      - ./certificates/tmp:/tmp/certificates/tmp/kibana.keystore
     ports:
       - "5601:5601"
     depends_on:
