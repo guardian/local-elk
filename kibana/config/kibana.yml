@@ -4,5 +4,8 @@
 #
 server.name: kibana
 server.host: "0"
-elasticsearch.hosts: [ "http://elasticsearch:9200" ]
-server.ssl.keystore.path: "/certificates/elastic-certificates.p12"
+elasticsearch.hosts: [ "https://elasticsearch-node:9200" ]
+
+elasticsearch.ssl.certificateAuthorities: [ "/tmp/certificates/ca/ca.crt" ]
+
+# elasticsearch.ssl.certificateAuthorities: [ "/usr/share/kibana/config/elasticsearch-ca.pem" ]

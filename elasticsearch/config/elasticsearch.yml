@@ -7,4 +7,18 @@ cluster.name: "local-elk"
 discovery.type: single-node
 network.host: 0.0.0.0
 
-xpack.security.enabled: false
+xpack.security.enabled: true
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.key: /tmp/certificates/elasticsearch/elasticsearch.key
+xpack.security.transport.ssl.certificate: /tmp/certificates/elasticsearch/elasticsearch.crt
+xpack.security.transport.ssl.certificate_authorities: [ "/tmp/certificates/ca/ca.crt" ]
+
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.key: /tmp/certificates/elasticsearch/elasticsearch.key
+xpack.security.http.ssl.certificate: /tmp/certificates/elasticsearch/elasticsearch.crt 
+xpack.security.http.ssl.certificate_authorities: [ "/tmp/certificates/ca/ca.crt" ]
+
+# xpack.security.http.ssl.enabled: true
+# xpack.security.http.ssl.keystore.path: "/usr/share/elasticsearch/config/http.p12"
