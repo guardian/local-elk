@@ -5,3 +5,24 @@
 server.name: kibana
 server.host: "0"
 elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+
+# https://www.elastic.co/guide/en/kibana/current/logging-settings.html
+# https://www.elastic.co/guide/en/kibana/current/logging-service.html
+logging:
+  appenders:
+    rolling-json-file:
+      type: rolling-file
+      fileName: /var/log/kibana.log
+      layout:
+        type: pattern
+      policy:
+        type: size-limit
+        size: 100mb
+      strategy:
+        type: numeric
+        pattern: '-%i'
+        max: 2
+  root:
+    appenders:
+      - default
+      - rolling-json-file
